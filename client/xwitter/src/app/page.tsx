@@ -6,13 +6,13 @@ import { BsSearch } from "react-icons/bs";
 const Home = () => {
   return (
     <div className="w-full h-full flex justify-center items-center relative bg-black">
-      <div className="max-w-screen-xl w-full h-full flex relative">
+      <div className="max-w-[70vw] w-full h-full flex relative">
         {/* left sidebar, nav/header */}
         <LeftSidebar />
         {/* main */}
         <MainComponent />
         {/* right section */}
-        <section className="absolute w-[275px] right-0 flex flex-col items-stretch h-screen px-6">
+        <section className="w-full sticky top-0 flex flex-col items-stretch h-screen px-6">
           <div>
             <div className="relative w-full h-full">
               <label
