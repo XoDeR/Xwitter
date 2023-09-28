@@ -12,21 +12,21 @@ const Home = () => {
         {/* main */}
         <MainComponent />
         {/* right section */}
-        <section className="w-full sticky top-0 flex flex-col items-stretch h-screen px-6">
+        <section className="w-full sticky top-2 mt-2 flex flex-col items-stretch h-screen px-6">
           <div>
-            <div className="relative w-full h-full">
-              <label
-                htmlFor="searchBox"
-                className="absolute top-0 left-0 h-full flex items-center justify-center"
-              >
-                <BsSearch className="w-5 h-5 text-gray-500" />
-              </label>
+            <div className="relative w-full h-full group">
               <input
                 id="searchBox"
                 type="text"
                 placeholder="Search Xwitter"
-                className="outline-none bg-transparent border-none w-full h-full rounded-xl py-4 px-8"
+                className="outline-none peer focus:border-primary focus:border bg-neutral-900/90 w-full h-full rounded-xl py-4 pl-14 pr-4"
               />
+              <label
+                htmlFor="searchBox"
+                className="absolute top-0 left-0 h-full flex items-center justify-center p-4 text-gray-500 peer-focus:text-primary"
+              >
+                <BsSearch className="w-5 h-5" />
+              </label>
             </div>
           </div>
           <div></div>
