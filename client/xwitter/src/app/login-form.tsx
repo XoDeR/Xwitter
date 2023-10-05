@@ -6,6 +6,10 @@ import { useState } from "react";
 
 import type { Session } from "@supabase/auth-helpers-nextjs";
 
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
 export default function LoginForm({ session }: { session: Session | null }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,6 +50,24 @@ export default function LoginForm({ session }: { session: Session | null }) {
     <button onClick={handleSignOut}>Sign out</button>
   ) : (
     <>
+      <Dialog open={true}>
+        <DialogContent className="bg-black p-6">
+          <h3 className="text-lg my-1 text-white">
+            Please sign in to continue
+          </h3>
+          <form>
+            <Input type="text" placeholder="email" />
+            <p className="text-sm text-gray-200 my-2">
+              you will receive a login magic link here!
+            </p>
+            <div className="flex w-full justify-end">
+              <Button className="bg-white text-black hover:text-white hover:border-white">
+                Login
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
       <input
         name="email"
         onChange={(e) => setEmail(e.target.value)}
