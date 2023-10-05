@@ -56,7 +56,7 @@ const LeftSidebar = () => {
             {item.title !== "Twitter" && <div>{item.title}</div>}
           </Link>
         ))}
-        <button className="rounded-full m-4 bg-primary p-4 text-2xl text-center hover:bg-opacity-70 transition duration-200">
+        <button className="rounded-full m-4 bg-xwitterColor p-4 text-2xl text-center hover:bg-opacity-70 transition duration-200">
           Tweet
         </button>
       </div>
