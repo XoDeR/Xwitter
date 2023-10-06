@@ -9,10 +9,13 @@ import type { Session } from "@supabase/auth-helpers-nextjs";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Toaster, toast } from "sonner";
 
 export default function LoginForm({ session }: { session: Session | null }) {
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const supabase = createClientComponentClient();
 
@@ -50,18 +53,57 @@ export default function LoginForm({ session }: { session: Session | null }) {
     <button onClick={handleSignOut}>Sign out</button>
   ) : (
     <>
+      <Toaster />
       <Dialog open={true}>
         <DialogContent className="bg-black p-6">
           <h3 className="text-lg my-1 text-white">
             Please sign in to continue
           </h3>
-          <form>
-            <Input type="text" placeholder="email" />
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              setIsLoading(true);
+              const { data, error } = await supabase
+                .from("profiles")
+                .select()
+                .eq("username", username.trim());
+              if (data && data?.length > 0) {
+                console.log(data);
+                return toast.error(
+                  "username already exists, please use another"
+                );
+              }
+              await supabase.auth.signInWithOtp({
+                email: email.trim(),
+                options: {
+                  data: {
+                    username,
+                  },
+                },
+              });
+              setIsLoading(false);
+            }}
+          >
+            <Input
+              type="email"
+              placeholder="email"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+              type="text"
+              placeholder="user name"
+              min={3}
+              onChange={(e) => setUsername(e.target.value)}
+              className="my-2"
+            />
             <p className="text-sm text-gray-200 my-2">
               you will receive a login magic link here!
             </p>
             <div className="flex w-full justify-end">
-              <Button className="bg-white text-black hover:text-white hover:border-white">
+              <Button
+                disabled={!isLoading}
+                className="bg-white text-black hover:text-white hover:border-white"
+              >
                 Login
               </Button>
             </div>
