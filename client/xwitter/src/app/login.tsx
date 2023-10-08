@@ -11,5 +11,7 @@ export default async function Login() {
     data: { session },
   } = await supabase.auth.getSession();
 
+  console.log(session);
+
   return <LoginForm session={session} />;
 }
