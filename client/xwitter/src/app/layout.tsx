@@ -1,7 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Login from "./login";
+import SupabaseProvider from "./supabase-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,9 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {/* @ts-expect-error Async Server Component */}
-        <Login />
-        {children}
+        <SupabaseProvider>{children}</SupabaseProvider>
       </body>
     </html>
   );
