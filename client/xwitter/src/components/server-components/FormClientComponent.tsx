@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import { PostgrestError } from "@supabase/supabase-js";
 import { toast } from "sonner";
 
@@ -15,6 +15,8 @@ type FormClientComponentProps = {
 };
 
 const FormClientComponent = ({ serverAction }: FormClientComponentProps) => {
+  const resetRef = useRef<HTMLButtonElement>(null);
+
   const handleSubmitTweet = async (data: any) => {
     try {
       const res = await serverAction(data);
@@ -22,6 +24,7 @@ const FormClientComponent = ({ serverAction }: FormClientComponentProps) => {
         return toast.error(res.error.message);
       }
       toast.success("Message is sent successfully");
+      resetRef.current?.click();
     } catch (error) {
       console.log(error);
     }
@@ -47,6 +50,7 @@ const FormClientComponent = ({ serverAction }: FormClientComponentProps) => {
           >
             Tweet
           </button>
+          <button ref={resetRef} className="invisible" type="reset"></button>
         </div>
       </div>
     </form>
