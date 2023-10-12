@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { Database } from "@/lib/supabase.types";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { SupabaseClient } from "@supabase/supabase-js";
-import FormClientComponent from "../client-components/FormClientComponent";
+import ComposeTweetForm from "../client-components/compose-tweet-form";
 import { revalidatePath } from "next/cache";
 
 const ComposeTweet = () => {
@@ -47,7 +47,7 @@ const ComposeTweet = () => {
     return { data, error };
   }
 
-  return <FormClientComponent serverAction={submitTweet} />;
+  return <ComposeTweetForm serverAction={submitTweet} />;
 };
 
 export default ComposeTweet;
