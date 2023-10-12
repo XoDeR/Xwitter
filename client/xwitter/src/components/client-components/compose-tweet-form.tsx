@@ -54,4 +54,4 @@ const ComposeTweetForm = ({ serverAction }: ComposeTweetFormProps) => {
   );
 };
 
-export default FormClientComponent;
+export default ComposeTweetForm;
