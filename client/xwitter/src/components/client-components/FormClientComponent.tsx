@@ -31,10 +31,7 @@ const FormClientComponent = ({ serverAction }: FormClientComponentProps) => {
   };
 
   return (
-    <form
-      action={handleSubmitTweet as any}
-      className="flex flex-col w-full h-full"
-    >
+    <form action={handleSubmitTweet} className="flex flex-col w-full h-full">
       <input
         type="text"
         name="tweet"
