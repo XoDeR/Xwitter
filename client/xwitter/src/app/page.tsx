@@ -2,6 +2,9 @@ import LeftSidebar from "@/components/LeftSidebar";
 import MainComponent from "@/components/MainComponent";
 import RightSection from "@/components/RightSection";
 
+// caching disabled
+export const revalidate = 0;
+
 const Home = async () => {
   return (
     <div className="w-full h-full flex justify-center items-center text-white relative bg-black">
