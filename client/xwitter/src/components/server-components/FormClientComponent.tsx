@@ -5,20 +5,25 @@ import { PostgrestError } from "@supabase/supabase-js";
 import { toast } from "sonner";
 
 type FormClientComponentProps = {
-  serverAction: (formData: FormData) => Promise<
-    | {
-        data: null;
-        error: PostgrestError | null;
-      }
+  serverAction: (
+    formData: FormData
+  ) => Promise<
+    | { error: { message: string }; data?: undefined }
+    | { data: null; error: PostgrestError | null }
     | undefined
   >;
 };
 
 const FormClientComponent = ({ serverAction }: FormClientComponentProps) => {
   const handleSubmitTweet = async (data: any) => {
-    const res = await serverAction(data);
-    if (res?.error) {
-      toast.error(res.error.message);
+    try {
+      const res = await serverAction(data);
+      if (res?.error) {
+        return toast.error(res.error.message);
+      }
+      toast.success("Message is sent successfully");
+    } catch (error) {
+      console.log(error);
     }
   };
 
