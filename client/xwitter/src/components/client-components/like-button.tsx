@@ -6,7 +6,7 @@ import { createPagesBrowserClient } from "@supabase/auth-helpers-nextjs";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { toast } from "sonner";
 
-import { likeTweet } from "@/lib/supabase/mutations";
+import { likeTweet, unlikeTweet } from "@/lib/supabase/mutations";
 
 type LikeButtonProps = {
   tweetId: string;
@@ -27,7 +27,11 @@ const LikeButton = ({ tweetId, likesCount, userHasLiked }: LikeButtonProps) => {
           .then((res) => {
             if (res.data && res.data.user) {
               const user = res.data.user;
-              startTransition(() => likeTweet({ tweetId, userId: user.id }));
+              startTransition(() =>
+                userHasLiked
+                  ? unlikeTweet({ tweetId, userId: user.id })
+                  : likeTweet({ tweetId, userId: user.id })
+              );
             } else {
               toast("You have to login to like a message.");
             }
