@@ -25,6 +25,8 @@
     "eslint-config-next": "13.5.2",
     "lucide-react": "^0.279.0",
     "next": "13.5.2",
+    "pg": "^8.11.3",
+    "pg-pool": "^3.6.1",
     "postcss": "8.4.30",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -36,6 +38,7 @@
     "typescript": "5.2.2"
   },
   "devDependencies": {
+    "@types/pg-pool": "^2.0.4",
     "supabase": "^1.99.5"
   }
 }

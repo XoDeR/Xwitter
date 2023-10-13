@@ -6,13 +6,13 @@ import { cookies } from "next/headers";
 import { Database } from "@/lib/supabase.types";
 
 const MainComponent = async () => {
-  const res = await getTweets();
-
   const supabaseClient = createServerComponentClient<Database>({
     cookies,
   });
   const { data: userData, error: userError } =
     await supabaseClient.auth.getUser();
+
+  const res = await getTweets(userData.user?.id);
 
   return (
     <main className="flex w-full xl:w-[50%] h-full min-h-screen flex-col border-l-[0.5px] border-r-[0.5px] border-gray-600">
@@ -24,7 +24,7 @@ const MainComponent = async () => {
         <ComposeTweet />
       </div>
       <div className="flex flex-col w-full">
-        {res?.error && <div>Something is wrong with the server</div>}
+        {/* {res?.error && <div>Something is wrong with the server</div>}
         {res?.data &&
           res.data.map((tweet) => (
             <Tweet
@@ -32,7 +32,7 @@ const MainComponent = async () => {
               tweet={tweet}
               currentUserId={userData.user?.id}
             />
-          ))}
+          ))} */}
       </div>
     </main>
   );
