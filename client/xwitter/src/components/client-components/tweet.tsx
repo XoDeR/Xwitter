@@ -21,12 +21,6 @@ type TweetProps = {
 };
 
 const Tweet = async ({ tweet, currentUserId }: TweetProps) => {
-  const getTweetLikesCount = await getLikesCount(tweet.id);
-  const userHasLiked = await isLiked({
-    tweetId: tweet.id,
-    userId: currentUserId,
-  });
-
   return (
     <div className="border-b-[0.5px] border-gray-600 p-2 flex space-x-4">
       <div>
@@ -35,8 +29,8 @@ const Tweet = async ({ tweet, currentUserId }: TweetProps) => {
       <div className="flex flex-col w-full">
         <div className="flex items-center w-full justify-between">
           <div className="flex items-center space-x-1 w-full">
-            <div className="font-bold">{tweet.profiles.full_name ?? ""}</div>
-            <div className="text-gray-500">@{tweet.profiles.username}</div>
+            <div className="font-bold">{tweet.full_name ?? ""}</div>
+            <div className="text-gray-500">@{tweet.username}</div>
             <div className="text-gray-500">
               <BsDot />
             </div>
@@ -59,8 +53,8 @@ const Tweet = async ({ tweet, currentUserId }: TweetProps) => {
           </div>
           <LikeButton
             tweetId={tweet.id}
-            likesCount={tweet.likesCount}
-            userHasLiked={tweet.user_has_liked}
+            likesCount={tweet.likes_count}
+            userHasLiked={Boolean(tweet?.user_has_liked)}
           />
           <div className="rounded-full hover:bg-white/10 transition duration-200 p-3 cursor-pointer">
             <IoStatsChart />
