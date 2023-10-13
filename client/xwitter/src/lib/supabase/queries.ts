@@ -11,7 +11,7 @@ export type TweetType = Database["public"]["Tables"]["tweets"]["Row"] & {
   >;
 };
 
-const queryWithCurrentUserId = `SELECT tweets.*, COUNT(likes.id) AS likes_count,
+const queryWithCurrentUserId = `SELECT tweets.*, profiles.username, profiles.full_name, COUNT(likes.id) AS likes_count,
       EXISTS (
         SELECT 1
         FROM likes
@@ -20,13 +20,15 @@ const queryWithCurrentUserId = `SELECT tweets.*, COUNT(likes.id) AS likes_count,
       ) AS user_has_liked
     FROM tweets
     LEFT JOIN likes ON tweets.id = likes.tweet_id
-    GROUP BY tweets.id
+    JOIN profiles ON tweets.user_id = profiles.id
+    GROUP BY tweets.id, profiles.username, profiles.full_name
     ORDER BY tweets.created_at DESC`;
 
-const queryWithoutCurrentUserId = `SELECT tweets.*, COUNT(likes.id) AS likes_count
+const queryWithoutCurrentUserId = `SELECT tweets.*, profiles.username, profiles.full_name, COUNT(likes.id) AS likes_count
     FROM tweets
     LEFT JOIN likes ON tweets.id = likes.tweet_id
-    GROUP BY tweets.id
+    JOIN profiles ON tweets.user_id = profiles.id
+    GROUP BY tweets.id, profiles.username, profiles.full_name
     ORDER BY tweets.created_at DESC`;
 
 export const getTweets = async (currentUserId?: string) => {
@@ -35,27 +37,13 @@ export const getTweets = async (currentUserId?: string) => {
   if (currentUserId) {
     query = queryWithCurrentUserId;
   }
-  pool.query(query, [currentUserId], (error, result) => {
-    if (error) {
-      console.error("Error executing query:", error);
-      return;
-    }
-    console.log("Query result:", result.rows);
-  });
 
-  //pool.end();
-
-  // return await supabaseServer
-  //   .from("tweets")
-  //   .select(
-  //     `
-  //     *,
-  //     profiles (
-  //       full_name,
-  //       username
-  //     )`
-  //   )
-  //   .returns<TweetType[]>();
+  try {
+    const res = await pool.query(query, [currentUserId]);
+    return { data: res.rows };
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const getLikesCount = async (tweetId: string) => {

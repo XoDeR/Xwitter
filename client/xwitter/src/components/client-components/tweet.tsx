@@ -16,7 +16,7 @@ import LikeButton from "./like-button";
 dayjs.extend(relativeTime);
 
 type TweetProps = {
-  tweet: TweetType;
+  tweet: any;
   currentUserId?: string;
 };
 
@@ -59,8 +59,8 @@ const Tweet = async ({ tweet, currentUserId }: TweetProps) => {
           </div>
           <LikeButton
             tweetId={tweet.id}
-            likesCount={getTweetLikesCount.count}
-            userHasLiked={userHasLiked}
+            likesCount={tweet.likesCount}
+            userHasLiked={tweet.user_has_liked}
           />
           <div className="rounded-full hover:bg-white/10 transition duration-200 p-3 cursor-pointer">
             <IoStatsChart />
