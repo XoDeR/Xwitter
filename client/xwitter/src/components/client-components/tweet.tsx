@@ -12,7 +12,8 @@ import { createPagesBrowserClient } from "@supabase/auth-helpers-nextjs";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { TweetType, likeTweet } from "@/lib/supabase/getTweets";
+import { TweetType } from "@/lib/supabase/queries";
+import { likeTweet } from "@/lib/supabase/mutations";
 dayjs.extend(relativeTime);
 
 type TweetProps = {

@@ -1,5 +1,5 @@
 import ComposeTweet from "./server-components/compose-tweet";
-import { getTweets } from "@/lib/supabase/getTweets";
+import { getTweets } from "@/lib/supabase/queries";
 import Tweet from "./client-components/tweet";
 
 const MainComponent = async () => {
