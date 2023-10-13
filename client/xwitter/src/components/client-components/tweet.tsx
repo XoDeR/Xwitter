@@ -1,13 +1,18 @@
-import React from "react";
+"use client";
+
+import React, { useTransition, useState } from "react";
 import { Database } from "@/lib/supabase.types";
 
 import { BsChat, BsDot, BsThreeDots } from "react-icons/bs";
 import { AiOutlineHeart, AiOutlineRetweet } from "react-icons/ai";
 import { IoStatsChart, IoShareOutline } from "react-icons/io5";
 
+import { toast } from "sonner";
+import { createPagesBrowserClient } from "@supabase/auth-helpers-nextjs";
+
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { TweetType } from "@/lib/supabase/getTweets";
+import { TweetType, likeTweet } from "@/lib/supabase/getTweets";
 dayjs.extend(relativeTime);
 
 type TweetProps = {
@@ -15,6 +20,9 @@ type TweetProps = {
 };
 
 const Tweet = ({ tweet }: TweetProps) => {
+  const [supabase] = useState(() => createPagesBrowserClient());
+  let [isLikePending, startTransition] = useTransition();
+
   return (
     <div className="border-b-[0.5px] border-gray-600 p-2 flex space-x-4">
       <div>
@@ -45,9 +53,29 @@ const Tweet = ({ tweet }: TweetProps) => {
           <div className="rounded-full hover:bg-white/10 transition duration-200 p-3 cursor-pointer">
             <AiOutlineRetweet />
           </div>
-          <div className="rounded-full hover:bg-white/10 transition duration-200 p-3 cursor-pointer">
+          <button
+            disabled={isLikePending}
+            onClick={() => {
+              supabase.auth
+                .getUser()
+                .then((res) => {
+                  if (res.data && res.data.user) {
+                    const user = res.data.user;
+                    startTransition(() =>
+                      likeTweet({ tweetId: tweet.id, userId: user.id })
+                    );
+                  } else {
+                    toast("You have to login to like a message.");
+                  }
+                })
+                .catch(() => {
+                  toast.error("Authentication failed.");
+                });
+            }}
+            className="rounded-full hover:bg-white/10 transition duration-200 p-3 cursor-pointer"
+          >
             <AiOutlineHeart />
-          </div>
+          </button>
           <div className="rounded-full hover:bg-white/10 transition duration-200 p-3 cursor-pointer">
             <IoStatsChart />
           </div>
