@@ -16,3 +16,12 @@ export const likeTweet = async ({
 
   console.log(data, error);
 };
+
+export const unlikeTweet = async ({ likeId }: { likeId: string }) => {
+  const { data, error } = await supabaseServer
+    .from("likes")
+    .delete()
+    .eq("id", likeId);
+
+  console.log(data, error);
+};
