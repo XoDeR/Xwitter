@@ -32,14 +32,14 @@ const queryWithoutCurrentUserId = `SELECT tweets.*, profiles.username, profiles.
     ORDER BY tweets.created_at DESC`;
 
 export const getTweets = async (currentUserId?: string) => {
-  let query = queryWithoutCurrentUserId;
+  let query = pool.query(queryWithoutCurrentUserId);
 
   if (currentUserId) {
-    query = queryWithCurrentUserId;
+    query = pool.query(queryWithCurrentUserId, [currentUserId]);
   }
 
   try {
-    const res = await pool.query(query, [currentUserId]);
+    const res = await query;
     return { data: res.rows };
   } catch (error) {
     console.log(error);
