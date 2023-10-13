@@ -36,7 +36,7 @@ const RightSection = () => {
       <div className="flex flex-col rounded-xl bg-neutral-900 my-4 sticky top-0">
         <h3 className="font-bold text-xl my-4 px-4">Who to follow</h3>
         <div>
-          {Array.from({ length: 5 }).map((_, i) => (
+          {Array.from({ length: 3 }).map((_, i) => (
             <div
               key={i}
               className="hover:bg-white/10 p-4 flex justify-between items-center last:rounded-b-xl transition duration-200"
