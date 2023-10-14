@@ -22,6 +22,9 @@ const LikeButton = ({ tweetId, likesCount, userHasLiked }: LikeButtonProps) => {
     <button
       disabled={isLikePending}
       onClick={() => {
+        // TODO
+        // remove this not to cause many auth requests
+        // use userId from main-component that is passed also to tweet component
         supabase.auth
           .getUser()
           .then((res) => {

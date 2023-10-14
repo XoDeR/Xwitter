@@ -42,6 +42,7 @@ export const getTweets = async (currentUserId?: string) => {
     const res = await query;
     return { data: res.rows };
   } catch (error) {
+    return { error: "Something is wrong with querying the db." };
     console.log(error);
   }
 };
