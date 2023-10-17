@@ -11,25 +11,25 @@ export type TweetType = Database["public"]["Tables"]["tweets"]["Row"] & {
   >;
 };
 
-const queryWithCurrentUserId = `SELECT tweets.*, profiles.username, profiles.full_name, COUNT(likes.id) AS likes_count,
-      EXISTS (
-        SELECT 1
-        FROM likes
-        WHERE likes.tweet_id = tweets.id
-        AND likes.user_id = $1
-      ) AS user_has_liked
-    FROM tweets
-    LEFT JOIN likes ON tweets.id = likes.tweet_id
-    JOIN profiles ON tweets.user_id = profiles.id
-    GROUP BY tweets.id, profiles.username, profiles.full_name
-    ORDER BY tweets.created_at DESC`;
+// const queryWithCurrentUserId = `SELECT tweets.*, profiles.username, profiles.full_name, COUNT(likes.id) AS likes_count,
+//       EXISTS (
+//         SELECT 1
+//         FROM likes
+//         WHERE likes.tweet_id = tweets.id
+//         AND likes.user_id = $1
+//       ) AS user_has_liked
+//     FROM tweets
+//     LEFT JOIN likes ON tweets.id = likes.tweet_id
+//     JOIN profiles ON tweets.user_id = profiles.id
+//     GROUP BY tweets.id, profiles.username, profiles.full_name
+//     ORDER BY tweets.created_at DESC`;
 
-const queryWithoutCurrentUserId = `SELECT tweets.*, profiles.username, profiles.full_name, COUNT(likes.id) AS likes_count
-    FROM tweets
-    LEFT JOIN likes ON tweets.id = likes.tweet_id
-    JOIN profiles ON tweets.user_id = profiles.id
-    GROUP BY tweets.id, profiles.username, profiles.full_name
-    ORDER BY tweets.created_at DESC`;
+// const queryWithoutCurrentUserId = `SELECT tweets.*, profiles.username, profiles.full_name, COUNT(likes.id) AS likes_count
+//     FROM tweets
+//     LEFT JOIN likes ON tweets.id = likes.tweet_id
+//     JOIN profiles ON tweets.user_id = profiles.id
+//     GROUP BY tweets.id, profiles.username, profiles.full_name
+//     ORDER BY tweets.created_at DESC`;
 
 export const getTweets = async (currentUserId?: string) => {
   let query = pool.query(queryWithoutCurrentUserId);

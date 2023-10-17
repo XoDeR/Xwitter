@@ -5,7 +5,7 @@ import {
   pgTable,
   primaryKey,
   AnyPgColumn,
-  foreignKey,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 export const profiles = pgTable("profiles", {
@@ -48,43 +48,52 @@ export const tweetHashtag = pgTable(
   })
 );
 
-export const replies = pgTable(
-  "replies",
+export const replies = pgTable("replies", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  text: text("text").notNull(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => profiles.id),
+  tweetId: uuid("tweet_id").references(() => tweets.id),
+  replyId: uuid("reply_id").references((): AnyPgColumn => replies.id),
+});
+
+export const likes = pgTable(
+  "likes",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    text: text("text").notNull(),
     userId: uuid("user_id")
       .notNull()
       .references(() => profiles.id),
-    tweetId: uuid("tweet_id").references(() => tweets.id),
-    replyId: uuid("reply_id").references((): AnyPgColumn => replies.id),
+    tweetId: uuid("tweet_id")
+      .notNull()
+      .references(() => tweets.id),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (replies) => ({
-    replyUserFk: foreignKey({
-      columns: [replies.user_id],
-      foreignColumns: [profiles.id],
-    }),
-    replyTweetFk: foreignKey({
-      columns: [replies.tweet_id],
-      foreignColumns: [tweets.id],
-    }),
-    replyReplyFk: foreignKey({
-      columns: [replies.reply_id],
-      foreignColumns: [replies.id],
-    }),
+  (likes) => ({
+    uniqueLikeIndex: uniqueIndex("likes__user_id_tweet_id__idx").on(
+      likes.userId,
+      likes.tweetId
+    ),
   })
 );
 
-export const likes = pgTable("likes", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  user_id: uuid("user_id"),
-  tweet_id: uuid("tweet_id"),
-  created_at: timestamp("created_at"),
-});
-
-export const bookmarks = pgTable("bookmarks", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  user_id: uuid("user_id"),
-  tweet_id: uuid("tweet_id"),
-  created_at: timestamp("created_at"),
-});
+export const bookmarks = pgTable(
+  "bookmarks",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => profiles.id),
+    tweetId: uuid("tweet_id")
+      .notNull()
+      .references(() => tweets.id),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (bookmarks) => ({
+    uniqueBookmarkIndex: uniqueIndex("bookmarks__user_id_tweet_id__idx").on(
+      bookmarks.userId,
+      bookmarks.tweetId
+    ),
+  })
+);

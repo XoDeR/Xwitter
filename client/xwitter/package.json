@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate": "drizzle-kit generate:pg",
+    "migrate": "npx bun run src\\lib\\db\\migrate.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",
@@ -40,6 +42,7 @@
     "typescript": "5.2.2"
   },
   "devDependencies": {
+    "@types/pg": "^8.10.5",
     "@types/pg-pool": "^2.0.4",
     "drizzle-kit": "^0.19.13",
     "supabase": "^1.99.5"
