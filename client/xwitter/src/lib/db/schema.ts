@@ -1,4 +1,12 @@
-import { text, timestamp, uuid, pgTable } from "drizzle-orm/pg-core";
+import {
+  text,
+  timestamp,
+  uuid,
+  pgTable,
+  primaryKey,
+  AnyPgColumn,
+  foreignKey,
+} from "drizzle-orm/pg-core";
 
 export const profiles = pgTable("profiles", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -40,13 +48,32 @@ export const tweetHashtag = pgTable(
   })
 );
 
-export const replies = pgTable("replies", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  text: text("text").notNull(),
-  user_id: uuid("user_id").notNull(),
-  tweet_id: uuid("tweet_id"),
-  reply_id: uuid("reply_id"),
-});
+export const replies = pgTable(
+  "replies",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    text: text("text").notNull(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => profiles.id),
+    tweetId: uuid("tweet_id").references(() => tweets.id),
+    replyId: uuid("reply_id").references((): AnyPgColumn => replies.id),
+  },
+  (replies) => ({
+    replyUserFk: foreignKey({
+      columns: [replies.user_id],
+      foreignColumns: [profiles.id],
+    }),
+    replyTweetFk: foreignKey({
+      columns: [replies.tweet_id],
+      foreignColumns: [tweets.id],
+    }),
+    replyReplyFk: foreignKey({
+      columns: [replies.reply_id],
+      foreignColumns: [replies.id],
+    }),
+  })
+);
 
 export const likes = pgTable("likes", {
   id: uuid("id").primaryKey().defaultRandom(),
