@@ -7,6 +7,6 @@ const main = async () => {
   console.log("Migrations are finished!");
 };
 
-main().then(() => {
+main().finally(() => {
   process.exit();
 });
