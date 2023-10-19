@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import {
   text,
   timestamp,
@@ -11,9 +12,17 @@ import {
 export const profiles = pgTable("profiles", {
   id: uuid("id").primaryKey().defaultRandom(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
   username: text("username").notNull(),
   fullName: text("full_name").notNull(),
 });
+
+export const profilesRelations = relations(profiles, ({ one, many }) => ({
+  tweets: many(tweets),
+  likes: many(likes),
+  bookmarks: many(bookmarks),
+  replies: many(replies),
+}));
 
 export const tweets = pgTable("tweets", {
   id: uuid("id").primaryKey().defaultRandom(),

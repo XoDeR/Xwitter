@@ -2,7 +2,7 @@
 
 import { supabaseServer } from ".";
 import { Database } from "@/lib/supabase.types";
-import { pool } from "../db";
+import { db } from "../db";
 
 export type TweetType = Database["public"]["Tables"]["tweets"]["Row"] & {
   profiles: Pick<
@@ -32,14 +32,10 @@ export type TweetType = Database["public"]["Tables"]["tweets"]["Row"] & {
 //     ORDER BY tweets.created_at DESC`;
 
 export const getTweets = async (currentUserId?: string) => {
-  let query = pool.query(queryWithoutCurrentUserId);
-
-  if (currentUserId) {
-    query = pool.query(queryWithCurrentUserId, [currentUserId]);
-  }
-
   try {
-    const res = await query;
+    const res = await db.query.tweets.findMany({
+      with
+    })
     return { data: res.rows };
   } catch (error) {
     return { error: "Something is wrong with querying the db." };
