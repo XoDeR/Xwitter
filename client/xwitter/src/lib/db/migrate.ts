@@ -3,7 +3,7 @@ import { db } from ".";
 
 const main = async () => {
   console.log("Migrations are running...");
-  await migrate(db, { migrationsFolder: "drizzle" });
+  await migrate(db, { migrationsFolder: "migrations" });
   console.log("Migrations are finished!");
 };
 
