@@ -5,13 +5,7 @@ import { PostgrestError } from "@supabase/supabase-js";
 import { toast } from "sonner";
 
 type ComposeTweetFormProps = {
-  serverAction: (
-    formData: FormData
-  ) => Promise<
-    | { error: { message: string }; data?: undefined }
-    | { data: null; error: PostgrestError | null }
-    | undefined
-  >;
+  serverAction: any;
 };
 
 const ComposeTweetForm = ({ serverAction }: ComposeTweetFormProps) => {

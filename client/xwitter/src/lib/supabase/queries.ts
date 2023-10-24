@@ -45,9 +45,15 @@ export const getTweets = async (currentUserId?: string) => {
     //     },
     //   },
     // });
-    const res = (
-      await db.select().from(tweets).leftJoin(likes, eq(tweets.id))
-    ).join();
+    const res = await db
+      .select()
+      .from(tweets)
+      .leftJoin(likes, eq(tweets.id, likes.tweetId))
+      .innerJoin(profiles, eq(tweets.userId, profiles.id))
+      .orderBy(desc(tweets.createdAt))
+      .limit(1);
+
+    console.log(res);
   } catch (error) {
     return { error: "Something is wrong with querying the db." };
     console.log(error);
