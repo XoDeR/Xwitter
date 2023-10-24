@@ -6,6 +6,8 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { SupabaseClient } from "@supabase/supabase-js";
 import ComposeTweetForm from "../client-components/compose-tweet-form";
 import { revalidatePath } from "next/cache";
+import { db } from "@/lib/db";
+import { likes, profiles, tweets } from "@/lib/db/schema";
 
 const ComposeTweet = () => {
   async function submitTweet(formData: FormData) {
@@ -36,15 +38,26 @@ const ComposeTweet = () => {
 
     if (userError) return;
 
-    const { data, error } = await supabaseServer.from("tweets").insert({
-      user_id: userData.user.id,
-      text: tweet.toString(),
-      id: randomUUID(),
-    });
+    let err = "";
+
+    const res = await db
+      .insert(tweets)
+      .values({
+        text: tweet.toString(),
+        id: randomUUID(),
+        userId: userData.user.id,
+      })
+      .returning()
+      .catch((error) => {
+        console.log(error);
+        err = "Insertion in tweet table in db is not successful.";
+      });
+
+    console.log(res);
 
     revalidatePath("/");
 
-    return { data, error };
+    return { data: res, error: err };
   }
 
   return <ComposeTweetForm serverAction={submitTweet} />;
