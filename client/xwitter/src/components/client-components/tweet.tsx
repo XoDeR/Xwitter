@@ -12,11 +12,12 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { TweetType, getLikesCount, isLiked } from "@/lib/supabase/queries";
 import LikeButton from "./like-button";
+import { Tweet, Profile } from "@/lib/db/schema";
 
 dayjs.extend(relativeTime);
 
 type TweetProps = {
-  tweet: any;
+  tweet: Profile & Tweet;
   currentUserId?: string;
 };
 
@@ -29,13 +30,13 @@ const Tweet = async ({ tweet, currentUserId }: TweetProps) => {
       <div className="flex flex-col w-full">
         <div className="flex items-center w-full justify-between">
           <div className="flex items-center space-x-1 w-full">
-            <div className="font-bold">{tweet.full_name ?? ""}</div>
+            <div className="font-bold">{tweet.fullName ?? ""}</div>
             <div className="text-gray-500">@{tweet.username}</div>
             <div className="text-gray-500">
               <BsDot />
             </div>
             <div className="text-gray-500">
-              {dayjs(tweet.created_at).fromNow()}
+              {dayjs(tweet.createdAt).fromNow()}
             </div>
           </div>
           <div>
@@ -51,11 +52,7 @@ const Tweet = async ({ tweet, currentUserId }: TweetProps) => {
           <div className="rounded-full hover:bg-white/10 transition duration-200 p-3 cursor-pointer">
             <AiOutlineRetweet />
           </div>
-          <LikeButton
-            tweetId={tweet.id}
-            likesCount={tweet.likes_count}
-            userHasLiked={Boolean(tweet?.user_has_liked)}
-          />
+          <LikeButton tweetId={tweet.id} likesCount={0} userHasLiked={false} />
           <div className="rounded-full hover:bg-white/10 transition duration-200 p-3 cursor-pointer">
             <IoStatsChart />
           </div>

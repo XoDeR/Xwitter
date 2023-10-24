@@ -26,14 +26,13 @@ const MainComponent = async () => {
       </div>
       <div className="flex flex-col w-full">
         {res?.error && <div>Something is wrong with the server</div>}
-        {res?.data &&
-          res.data.map((tweet) => (
-            <Tweet
-              key={tweet.id}
-              tweet={tweet}
-              currentUserId={userData.user?.id}
-            />
-          ))}
+        {res.data?.map(({ likes, profiles, tweets }) => (
+          <Tweet
+            key={tweets.id}
+            tweet={{ ...tweets, ...profiles }}
+            currentUserId={userData.user?.id}
+          />
+        ))}
       </div>
     </main>
   );
