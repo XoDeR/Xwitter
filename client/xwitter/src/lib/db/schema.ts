@@ -34,6 +34,13 @@ export const tweets = pgTable("tweets", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const tweetsRelations = relations(tweets, ({ one, many }) => ({
+  profile: one(profiles, {
+    fields: [tweets.userId],
+    references: [profiles.id],
+  }),
+}));
+
 export const hashtags = pgTable("hashtags", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
@@ -67,6 +74,13 @@ export const replies = pgTable("replies", {
   replyId: uuid("reply_id").references((): AnyPgColumn => replies.id),
 });
 
+export const repliesRelations = relations(replies, ({ one }) => ({
+  profile: one(profiles, {
+    fields: [replies.userId],
+    references: [profiles.id],
+  }),
+}));
+
 export const likes = pgTable(
   "likes",
   {
@@ -87,6 +101,13 @@ export const likes = pgTable(
   })
 );
 
+export const likesRelations = relations(likes, ({ one }) => ({
+  profile: one(profiles, {
+    fields: [likes.userId],
+    references: [profiles.id],
+  }),
+}));
+
 export const bookmarks = pgTable(
   "bookmarks",
   {
@@ -106,3 +127,10 @@ export const bookmarks = pgTable(
     ),
   })
 );
+
+export const bookmarksRelations = relations(bookmarks, ({ one }) => ({
+  profile: one(profiles, {
+    fields: [bookmarks.userId],
+    references: [profiles.id],
+  }),
+}));
