@@ -3,6 +3,8 @@
 import { supabaseServer } from ".";
 import { Database } from "@/lib/supabase.types";
 import { db } from "../db";
+import { likes, profiles, tweets } from "../db/schema";
+import { and, desc, eq, exists } from "drizzle-orm";
 
 export type TweetType = Database["public"]["Tables"]["tweets"]["Row"] & {
   profiles: Pick<
@@ -33,10 +35,19 @@ export type TweetType = Database["public"]["Tables"]["tweets"]["Row"] & {
 
 export const getTweets = async (currentUserId?: string) => {
   try {
-    const res = await db.query.tweets.findMany({
-      with
-    })
-    return { data: res.rows };
+    // const res = await db.query.tweets.findMany({
+    //   with: {
+    //     profile: {
+    //       columns: {
+    //         username: true,
+    //         fullName: true,
+    //       },
+    //     },
+    //   },
+    // });
+    const res = (
+      await db.select().from(tweets).leftJoin(likes, eq(tweets.id))
+    ).join();
   } catch (error) {
     return { error: "Something is wrong with querying the db." };
     console.log(error);
