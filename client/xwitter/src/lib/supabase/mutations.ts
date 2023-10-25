@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { supabaseServer } from ".";
 import { randomUUID } from "crypto";
+import { db } from "../db";
+import { likes } from "../db/schema";
 
 export const likeTweet = async ({
   tweetId,
@@ -11,12 +13,21 @@ export const likeTweet = async ({
   tweetId: string;
   userId: string;
 }) => {
-  const { data, error } = await supabaseServer
-    .from("likes")
-    .insert({ id: randomUUID(), tweet_id: tweetId, user_id: userId });
+  console.log({ tweetId, userId });
+
+  const res = await db
+    .insert(likes)
+    .values({
+      tweetId,
+      userId,
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  console.log(res);
 
   revalidatePath("/");
-  console.log(data, error);
 };
 
 export const unlikeTweet = async ({
