@@ -13,9 +13,7 @@ export const likeTweet = async ({
   tweetId: string;
   userId: string;
 }) => {
-  console.log({ tweetId, userId });
-
-  const res = await db
+  await db
     .insert(likes)
     .values({
       tweetId,
@@ -24,8 +22,6 @@ export const likeTweet = async ({
     .catch((err) => {
       console.log(err);
     });
-
-  console.log(res);
 
   revalidatePath("/");
 };
@@ -37,6 +33,7 @@ export const unlikeTweet = async ({
   tweetId: string;
   userId: string;
 }) => {
+  // TODO Rewrite using drizzle ORM
   const { data, error } = await supabaseServer
     .from("likes")
     .delete()

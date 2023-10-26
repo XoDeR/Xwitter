@@ -3,7 +3,7 @@
 import { supabaseServer } from ".";
 import { Database } from "@/lib/supabase.types";
 import { db } from "../db";
-import { likes, profiles, tweets } from "../db/schema";
+import { likes, profiles, tweets, Tweet, Profile, Like } from "../db/schema";
 import { and, desc, eq, exists } from "drizzle-orm";
 
 export type TweetType = Database["public"]["Tables"]["tweets"]["Row"] & {
@@ -35,29 +35,53 @@ export type TweetType = Database["public"]["Tables"]["tweets"]["Row"] & {
 
 export const getTweets = async (currentUserId?: string) => {
   try {
-    // const res = await db.query.tweets.findMany({
-    //   with: {
-    //     profile: {
-    //       columns: {
-    //         username: true,
-    //         fullName: true,
-    //       },
-    //     },
-    //   },
-    // });
     let err = "";
-    const res = await db
-      .select()
+    let doesLikeExist = db.select().from(likes);
+    if (currentUserId) {
+      doesLikeExist = db
+        .select()
+        .from(likes)
+        .where(eq(likes.userId, currentUserId));
+    }
+    const rows = await db
+      .select({
+        ...(currentUserId ? { hasLiked: exists(doesLikeExist) } : {}),
+        tweets,
+        likes,
+        profiles,
+      })
       .from(tweets)
       .leftJoin(likes, eq(tweets.id, likes.tweetId))
       .innerJoin(profiles, eq(tweets.userId, profiles.id))
       .orderBy(desc(tweets.createdAt))
-      .limit(1)
+      .limit(10)
       .catch(() => {
         err = "Error fetching tweets";
       });
 
-    return { data: res, error: err };
+    if (rows) {
+      const result = rows.reduce<
+        Record<string, { tweet: Tweet; likes: Like[]; profile: Profile; hasLiked: boolean }>
+      >((acc, row) => {
+        const tweet = row.tweets;
+        const like = row.likes;
+        const profile = row.profiles;
+        const hasLiked = row.hasLiked);
+
+        if (!acc[tweet.id]) {
+          acc[tweet.id] = { tweet, likes: [], profile, hasLiked };
+        }
+
+        if (like) {
+          acc[tweet.id].likes.push(like);
+        }
+
+        return acc;
+      }, {});
+
+      const data = Object.values(result);
+      return data;
+    }
   } catch (error) {
     return { error: "Something is wrong with querying the db." };
     console.log(error);

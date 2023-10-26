@@ -26,8 +26,8 @@ const MainComponent = async () => {
       </div>
       <div className="flex flex-col w-full">
         {res?.error && <div>Something is wrong with the server</div>}
-        {res.data?.map(({ likes, profiles, tweets }) => {
-          console.log(tweets);
+        {res.data?.map(({ likes, profiles, tweets, hasLiked }) => {
+          console.log(likes);
           return (
             <Tweet
               key={tweets.id}
@@ -35,7 +35,9 @@ const MainComponent = async () => {
                 tweetDetails: { ...tweets },
                 userProfile: { ...profiles },
               }}
+              likesCount={likes.length}
               currentUserId={userData.user?.id}
+              hasLiked={hasLiked}
             />
           );
         })}

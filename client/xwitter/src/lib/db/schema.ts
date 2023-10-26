@@ -105,6 +105,8 @@ export const likes = pgTable(
   })
 );
 
+export type Like = InferModel<typeof likes>;
+
 export const likesRelations = relations(likes, ({ one }) => ({
   profile: one(profiles, {
     fields: [likes.userId],
